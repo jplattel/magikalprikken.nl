@@ -4,27 +4,105 @@ import Answer from './components/Answer.svelte';
 export default {
     '1': {
         'type': Question,
-        'text': 'Werk je in de zorg?'
+        'text': 'Werk je in de zorg?',
+        'description': 'Longer text here....',
+        'answers': [
+            {
+                'text': "Ja",
+                'class': 'btn-success',
+                'newState': '100'
+            },
+            {
+                'text': "Nee",
+                'class': 'btn-danger',
+                'newState': '2'
+            }
+        ]
     },
     '2': {
         'type': Question,
-        'text': 'Ben je 60 jaar of ouder?'
+        'text': 'Ben je 60 jaar of ouder?',
+        'description': 'Longer text here....',
+        'answers': [
+            {
+                'text': "Ja",
+                'class': 'btn-success',
+                'newState': '101'
+            },
+            {
+                'text': "Nee",
+                'class': 'btn-danger',
+                'newState': '3'
+            }
+        ]
     },
     '3': {
         'type': Question,
-        'text': 'Question 3?'
+        'text': 'Question 3?',
+        'description': 'Longer text here....',
+        'answers': [
+            {
+                'text': "Ja",
+                'class': 'btn-success',
+                'newState': '100'
+            },
+            {
+                'text': "Nee",
+                'class': 'btn-danger',
+                'newState': '4'
+            }
+        ]
     },
     '4': {
         'type': Question,
-        'text': 'Question 4?'
+        'text': 'Question 4?',
+        'description': 'Longer text here....',
+        'answers': [
+            {
+                'text': "Ja",
+                'class': 'btn-success',
+                'newState': '101'
+            },
+            {
+                'text': "Nee",
+                'class': 'btn-danger',
+                'newState': '5'
+            }
+        ]
     },
     '5': {
         'type': Question,
-        'text': 'Question 5?'
+        'text': 'Question 5?',
+        'description': 'Longer text here....',
+        'answers': [
+            {
+                'text': "Ja",
+                'class': 'btn-success',
+                'newState': '101'
+            },
+            {
+                'text': "Nee",
+                'class': 'btn-danger',
+                'newState': '6'
+            }
+        ]
     },
     '6': {
         'type': Question,
-        'text': 'Question 6?'
+        'text': 'Question 6?',
+        'description': 'Longer text here....',
+        'answers': [
+            {
+                'text': "Ja",
+                'class': 'btn-success',
+                'newState': '102'
+            },
+            {
+                'text': "Nee",
+                'class': 'btn-danger',
+                'newState': '900'
+            }
+        ]
     },
     '100': {
         'type': Answer,
