@@ -23,7 +23,7 @@ export default {
     '2': {
         'type': Question,
         'text': 'Ben je 60 jaar of ouder?',
-        'description': 'Je leeftijd bepaald wanneer je het vaccin krijgt',
+        'description': 'Je leeftijd bepaalt wanneer je het vaccin krijgt',
         'answers': [
             {
                 'text': "Ja",

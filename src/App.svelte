@@ -54,7 +54,7 @@
 						Wij (<a href="https://nl.linkedin.com/in/arjan-sammani">Arjan</a>, <a href="https://www.linkedin.com/in/chantalvankempen/">Chantal</a>, <a href="https://www.linkedin.com/in/channah-ruiter/">Channah</a> & <a href="https://jplattel.nl">Joost</a>) hebben in een avond dit systeem bedacht en gemaakt.
 						Dit systeem heeft een simpel doel: mensen informeren wanneer en hoe ze worden geprikt. We
 						snappen ook niet waarom het zo moeilijk was, maar nemen je graag mee in het verhaal. Het
-						begon allemaal zo.
+						begon allemaal zo:
 					</p>
 					<p>
 						De ouders van Chantal zouden mogelijk in aanmerking komen voor een COVID-19 vaccin, maar
