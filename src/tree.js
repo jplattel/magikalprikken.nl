@@ -162,7 +162,7 @@ export default {
     '500': {
         'type': Answer,
         'text': 'De verwachting is dat het vaccin vanaf mei beschikbaar is.',
-        'description': 'Zodra er speciekere data beschikbaar is vullen we dit aan!',
+        'description': 'Zodra er speciekere data beschikbaar is vullen we dit aan! #duurtlang',
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken'
 
     }

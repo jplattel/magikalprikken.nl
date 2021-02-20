@@ -1,4 +1,4 @@
-<div class="card card-{type}" >
+<div class="card card-{type}" class:border-success="{confetti}" class:text-success="{confetti}">
     <div class="card-body">
         <h3 class="card-title mb-3">{text}</h3>
         {#if description} 
