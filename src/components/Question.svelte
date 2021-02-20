@@ -1,6 +1,6 @@
 <div class="card card-{type}" >
     <div class="card-body">
-        <h3 class="card-title">{text}</h3>
+        <h3 class="card-title mb-3">{text}</h3>
         {#if description} 
             <p class="card-text">{description}</p>
         {/if}

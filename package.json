@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "bootstrap": "^5.0.0-beta2",
+    "canvas-confetti": "^1.3.3",
     "sirv-cli": "^1.0.0"
   }
 }

@@ -446,6 +446,603 @@ var app = (function () {
         $inject_state() { }
     }
 
+    // canvas-confetti v1.3.3 built on 2021-01-16T22:50:46.932Z
+    var module = {};
+
+    // source content
+    (function main(global, module, isWorker, workerSize) {
+      var canUseWorker = !!(
+        global.Worker &&
+        global.Blob &&
+        global.Promise &&
+        global.OffscreenCanvas &&
+        global.OffscreenCanvasRenderingContext2D &&
+        global.HTMLCanvasElement &&
+        global.HTMLCanvasElement.prototype.transferControlToOffscreen &&
+        global.URL &&
+        global.URL.createObjectURL);
+
+      function noop() {}
+
+      // create a promise if it exists, otherwise, just
+      // call the function directly
+      function promise(func) {
+        var ModulePromise = module.exports.Promise;
+        var Prom = ModulePromise !== void 0 ? ModulePromise : global.Promise;
+
+        if (typeof Prom === 'function') {
+          return new Prom(func);
+        }
+
+        func(noop, noop);
+
+        return null;
+      }
+
+      var raf = (function () {
+        var TIME = Math.floor(1000 / 60);
+        var frame, cancel;
+        var frames = {};
+        var lastFrameTime = 0;
+
+        if (typeof requestAnimationFrame === 'function' && typeof cancelAnimationFrame === 'function') {
+          frame = function (cb) {
+            var id = Math.random();
+
+            frames[id] = requestAnimationFrame(function onFrame(time) {
+              if (lastFrameTime === time || lastFrameTime + TIME - 1 < time) {
+                lastFrameTime = time;
+                delete frames[id];
+
+                cb();
+              } else {
+                frames[id] = requestAnimationFrame(onFrame);
+              }
+            });
+
+            return id;
+          };
+          cancel = function (id) {
+            if (frames[id]) {
+              cancelAnimationFrame(frames[id]);
+            }
+          };
+        } else {
+          frame = function (cb) {
+            return setTimeout(cb, TIME);
+          };
+          cancel = function (timer) {
+            return clearTimeout(timer);
+          };
+        }
+
+        return { frame: frame, cancel: cancel };
+      }());
+
+      var getWorker = (function () {
+        var worker;
+        var prom;
+        var resolves = {};
+
+        function decorate(worker) {
+          function execute(options, callback) {
+            worker.postMessage({ options: options || {}, callback: callback });
+          }
+          worker.init = function initWorker(canvas) {
+            var offscreen = canvas.transferControlToOffscreen();
+            worker.postMessage({ canvas: offscreen }, [offscreen]);
+          };
+
+          worker.fire = function fireWorker(options, size, done) {
+            if (prom) {
+              execute(options, null);
+              return prom;
+            }
+
+            var id = Math.random().toString(36).slice(2);
+
+            prom = promise(function (resolve) {
+              function workerDone(msg) {
+                if (msg.data.callback !== id) {
+                  return;
+                }
+
+                delete resolves[id];
+                worker.removeEventListener('message', workerDone);
+
+                prom = null;
+                done();
+                resolve();
+              }
+
+              worker.addEventListener('message', workerDone);
+              execute(options, id);
+
+              resolves[id] = workerDone.bind(null, { data: { callback: id }});
+            });
+
+            return prom;
+          };
+
+          worker.reset = function resetWorker() {
+            worker.postMessage({ reset: true });
+
+            for (var id in resolves) {
+              resolves[id]();
+              delete resolves[id];
+            }
+          };
+        }
+
+        return function () {
+          if (worker) {
+            return worker;
+          }
+
+          if (!isWorker && canUseWorker) {
+            var code = [
+              'var CONFETTI, SIZE = {}, module = {};',
+              '(' + main.toString() + ')(this, module, true, SIZE);',
+              'onmessage = function(msg) {',
+              '  if (msg.data.options) {',
+              '    CONFETTI(msg.data.options).then(function () {',
+              '      if (msg.data.callback) {',
+              '        postMessage({ callback: msg.data.callback });',
+              '      }',
+              '    });',
+              '  } else if (msg.data.reset) {',
+              '    CONFETTI.reset();',
+              '  } else if (msg.data.resize) {',
+              '    SIZE.width = msg.data.resize.width;',
+              '    SIZE.height = msg.data.resize.height;',
+              '  } else if (msg.data.canvas) {',
+              '    SIZE.width = msg.data.canvas.width;',
+              '    SIZE.height = msg.data.canvas.height;',
+              '    CONFETTI = module.exports.create(msg.data.canvas);',
+              '  }',
+              '}',
+            ].join('\n');
+            try {
+              worker = new Worker(URL.createObjectURL(new Blob([code])));
+            } catch (e) {
+              // eslint-disable-next-line no-console
+              typeof console !== undefined && typeof console.warn === 'function' ? console.warn('🎊 Could not load worker', e) : null;
+
+              return null;
+            }
+
+            decorate(worker);
+          }
+
+          return worker;
+        };
+      })();
+
+      var defaults = {
+        particleCount: 50,
+        angle: 90,
+        spread: 45,
+        startVelocity: 45,
+        decay: 0.9,
+        gravity: 1,
+        ticks: 200,
+        x: 0.5,
+        y: 0.5,
+        shapes: ['square', 'circle'],
+        zIndex: 100,
+        colors: [
+          '#26ccff',
+          '#a25afd',
+          '#ff5e7e',
+          '#88ff5a',
+          '#fcff42',
+          '#ffa62d',
+          '#ff36ff'
+        ],
+        // probably should be true, but back-compat
+        disableForReducedMotion: false,
+        scalar: 1
+      };
+
+      function convert(val, transform) {
+        return transform ? transform(val) : val;
+      }
+
+      function isOk(val) {
+        return !(val === null || val === undefined);
+      }
+
+      function prop(options, name, transform) {
+        return convert(
+          options && isOk(options[name]) ? options[name] : defaults[name],
+          transform
+        );
+      }
+
+      function onlyPositiveInt(number){
+        return number < 0 ? 0 : Math.floor(number);
+      }
+
+      function randomInt(min, max) {
+        // [min, max)
+        return Math.floor(Math.random() * (max - min)) + min;
+      }
+
+      function toDecimal(str) {
+        return parseInt(str, 16);
+      }
+
+      function colorsToRgb(colors) {
+        return colors.map(hexToRgb);
+      }
+
+      function hexToRgb(str) {
+        var val = String(str).replace(/[^0-9a-f]/gi, '');
+
+        if (val.length < 6) {
+            val = val[0]+val[0]+val[1]+val[1]+val[2]+val[2];
+        }
+
+        return {
+          r: toDecimal(val.substring(0,2)),
+          g: toDecimal(val.substring(2,4)),
+          b: toDecimal(val.substring(4,6))
+        };
+      }
+
+      function getOrigin(options) {
+        var origin = prop(options, 'origin', Object);
+        origin.x = prop(origin, 'x', Number);
+        origin.y = prop(origin, 'y', Number);
+
+        return origin;
+      }
+
+      function setCanvasWindowSize(canvas) {
+        canvas.width = document.documentElement.clientWidth;
+        canvas.height = document.documentElement.clientHeight;
+      }
+
+      function setCanvasRectSize(canvas) {
+        var rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+
+      function getCanvas(zIndex) {
+        var canvas = document.createElement('canvas');
+
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0px';
+        canvas.style.left = '0px';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = zIndex;
+
+        return canvas;
+      }
+
+      function ellipse(context, x, y, radiusX, radiusY, rotation, startAngle, endAngle, antiClockwise) {
+        context.save();
+        context.translate(x, y);
+        context.rotate(rotation);
+        context.scale(radiusX, radiusY);
+        context.arc(0, 0, 1, startAngle, endAngle, antiClockwise);
+        context.restore();
+      }
+
+      function randomPhysics(opts) {
+        var radAngle = opts.angle * (Math.PI / 180);
+        var radSpread = opts.spread * (Math.PI / 180);
+
+        return {
+          x: opts.x,
+          y: opts.y,
+          wobble: Math.random() * 10,
+          velocity: (opts.startVelocity * 0.5) + (Math.random() * opts.startVelocity),
+          angle2D: -radAngle + ((0.5 * radSpread) - (Math.random() * radSpread)),
+          tiltAngle: Math.random() * Math.PI,
+          color: opts.color,
+          shape: opts.shape,
+          tick: 0,
+          totalTicks: opts.ticks,
+          decay: opts.decay,
+          random: Math.random() + 5,
+          tiltSin: 0,
+          tiltCos: 0,
+          wobbleX: 0,
+          wobbleY: 0,
+          gravity: opts.gravity * 3,
+          ovalScalar: 0.6,
+          scalar: opts.scalar
+        };
+      }
+
+      function updateFetti(context, fetti) {
+        fetti.x += Math.cos(fetti.angle2D) * fetti.velocity;
+        fetti.y += Math.sin(fetti.angle2D) * fetti.velocity + fetti.gravity;
+        fetti.wobble += 0.1;
+        fetti.velocity *= fetti.decay;
+        fetti.tiltAngle += 0.1;
+        fetti.tiltSin = Math.sin(fetti.tiltAngle);
+        fetti.tiltCos = Math.cos(fetti.tiltAngle);
+        fetti.random = Math.random() + 5;
+        fetti.wobbleX = fetti.x + ((10 * fetti.scalar) * Math.cos(fetti.wobble));
+        fetti.wobbleY = fetti.y + ((10 * fetti.scalar) * Math.sin(fetti.wobble));
+
+        var progress = (fetti.tick++) / fetti.totalTicks;
+
+        var x1 = fetti.x + (fetti.random * fetti.tiltCos);
+        var y1 = fetti.y + (fetti.random * fetti.tiltSin);
+        var x2 = fetti.wobbleX + (fetti.random * fetti.tiltCos);
+        var y2 = fetti.wobbleY + (fetti.random * fetti.tiltSin);
+
+        context.fillStyle = 'rgba(' + fetti.color.r + ', ' + fetti.color.g + ', ' + fetti.color.b + ', ' + (1 - progress) + ')';
+        context.beginPath();
+
+        if (fetti.shape === 'circle') {
+          context.ellipse ?
+            context.ellipse(fetti.x, fetti.y, Math.abs(x2 - x1) * fetti.ovalScalar, Math.abs(y2 - y1) * fetti.ovalScalar, Math.PI / 10 * fetti.wobble, 0, 2 * Math.PI) :
+            ellipse(context, fetti.x, fetti.y, Math.abs(x2 - x1) * fetti.ovalScalar, Math.abs(y2 - y1) * fetti.ovalScalar, Math.PI / 10 * fetti.wobble, 0, 2 * Math.PI);
+        } else {
+          context.moveTo(Math.floor(fetti.x), Math.floor(fetti.y));
+          context.lineTo(Math.floor(fetti.wobbleX), Math.floor(y1));
+          context.lineTo(Math.floor(x2), Math.floor(y2));
+          context.lineTo(Math.floor(x1), Math.floor(fetti.wobbleY));
+        }
+
+        context.closePath();
+        context.fill();
+
+        return fetti.tick < fetti.totalTicks;
+      }
+
+      function animate(canvas, fettis, resizer, size, done) {
+        var animatingFettis = fettis.slice();
+        var context = canvas.getContext('2d');
+        var animationFrame;
+        var destroy;
+
+        var prom = promise(function (resolve) {
+          function onDone() {
+            animationFrame = destroy = null;
+
+            context.clearRect(0, 0, size.width, size.height);
+
+            done();
+            resolve();
+          }
+
+          function update() {
+            if (isWorker && !(size.width === workerSize.width && size.height === workerSize.height)) {
+              size.width = canvas.width = workerSize.width;
+              size.height = canvas.height = workerSize.height;
+            }
+
+            if (!size.width && !size.height) {
+              resizer(canvas);
+              size.width = canvas.width;
+              size.height = canvas.height;
+            }
+
+            context.clearRect(0, 0, size.width, size.height);
+
+            animatingFettis = animatingFettis.filter(function (fetti) {
+              return updateFetti(context, fetti);
+            });
+
+            if (animatingFettis.length) {
+              animationFrame = raf.frame(update);
+            } else {
+              onDone();
+            }
+          }
+
+          animationFrame = raf.frame(update);
+          destroy = onDone;
+        });
+
+        return {
+          addFettis: function (fettis) {
+            animatingFettis = animatingFettis.concat(fettis);
+
+            return prom;
+          },
+          canvas: canvas,
+          promise: prom,
+          reset: function () {
+            if (animationFrame) {
+              raf.cancel(animationFrame);
+            }
+
+            if (destroy) {
+              destroy();
+            }
+          }
+        };
+      }
+
+      function confettiCannon(canvas, globalOpts) {
+        var isLibCanvas = !canvas;
+        var allowResize = !!prop(globalOpts || {}, 'resize');
+        var globalDisableForReducedMotion = prop(globalOpts, 'disableForReducedMotion', Boolean);
+        var shouldUseWorker = canUseWorker && !!prop(globalOpts || {}, 'useWorker');
+        var worker = shouldUseWorker ? getWorker() : null;
+        var resizer = isLibCanvas ? setCanvasWindowSize : setCanvasRectSize;
+        var initialized = (canvas && worker) ? !!canvas.__confetti_initialized : false;
+        var preferLessMotion = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion)').matches;
+        var animationObj;
+
+        function fireLocal(options, size, done) {
+          var particleCount = prop(options, 'particleCount', onlyPositiveInt);
+          var angle = prop(options, 'angle', Number);
+          var spread = prop(options, 'spread', Number);
+          var startVelocity = prop(options, 'startVelocity', Number);
+          var decay = prop(options, 'decay', Number);
+          var gravity = prop(options, 'gravity', Number);
+          var colors = prop(options, 'colors', colorsToRgb);
+          var ticks = prop(options, 'ticks', Number);
+          var shapes = prop(options, 'shapes');
+          var scalar = prop(options, 'scalar');
+          var origin = getOrigin(options);
+
+          var temp = particleCount;
+          var fettis = [];
+
+          var startX = canvas.width * origin.x;
+          var startY = canvas.height * origin.y;
+
+          while (temp--) {
+            fettis.push(
+              randomPhysics({
+                x: startX,
+                y: startY,
+                angle: angle,
+                spread: spread,
+                startVelocity: startVelocity,
+                color: colors[temp % colors.length],
+                shape: shapes[randomInt(0, shapes.length)],
+                ticks: ticks,
+                decay: decay,
+                gravity: gravity,
+                scalar: scalar
+              })
+            );
+          }
+
+          // if we have a previous canvas already animating,
+          // add to it
+          if (animationObj) {
+            return animationObj.addFettis(fettis);
+          }
+
+          animationObj = animate(canvas, fettis, resizer, size , done);
+
+          return animationObj.promise;
+        }
+
+        function fire(options) {
+          var disableForReducedMotion = globalDisableForReducedMotion || prop(options, 'disableForReducedMotion', Boolean);
+          var zIndex = prop(options, 'zIndex', Number);
+
+          if (disableForReducedMotion && preferLessMotion) {
+            return promise(function (resolve) {
+              resolve();
+            });
+          }
+
+          if (isLibCanvas && animationObj) {
+            // use existing canvas from in-progress animation
+            canvas = animationObj.canvas;
+          } else if (isLibCanvas && !canvas) {
+            // create and initialize a new canvas
+            canvas = getCanvas(zIndex);
+            document.body.appendChild(canvas);
+          }
+
+          if (allowResize && !initialized) {
+            // initialize the size of a user-supplied canvas
+            resizer(canvas);
+          }
+
+          var size = {
+            width: canvas.width,
+            height: canvas.height
+          };
+
+          if (worker && !initialized) {
+            worker.init(canvas);
+          }
+
+          initialized = true;
+
+          if (worker) {
+            canvas.__confetti_initialized = true;
+          }
+
+          function onResize() {
+            if (worker) {
+              // TODO this really shouldn't be immediate, because it is expensive
+              var obj = {
+                getBoundingClientRect: function () {
+                  if (!isLibCanvas) {
+                    return canvas.getBoundingClientRect();
+                  }
+                }
+              };
+
+              resizer(obj);
+
+              worker.postMessage({
+                resize: {
+                  width: obj.width,
+                  height: obj.height
+                }
+              });
+              return;
+            }
+
+            // don't actually query the size here, since this
+            // can execute frequently and rapidly
+            size.width = size.height = null;
+          }
+
+          function done() {
+            animationObj = null;
+
+            if (allowResize) {
+              global.removeEventListener('resize', onResize);
+            }
+
+            if (isLibCanvas && canvas) {
+              document.body.removeChild(canvas);
+              canvas = null;
+              initialized = false;
+            }
+          }
+
+          if (allowResize) {
+            global.addEventListener('resize', onResize, false);
+          }
+
+          if (worker) {
+            return worker.fire(options, size, done);
+          }
+
+          return fireLocal(options, size, done);
+        }
+
+        fire.reset = function () {
+          if (worker) {
+            worker.reset();
+          }
+
+          if (animationObj) {
+            animationObj.reset();
+          }
+        };
+
+        return fire;
+      }
+
+      module.exports = confettiCannon(null, { useWorker: true, resize: true });
+      module.exports.create = confettiCannon;
+    }((function () {
+      if (typeof window !== 'undefined') {
+        return window;
+      }
+
+      if (typeof self !== 'undefined') {
+        return self;
+      }
+
+      return this || {};
+    })(), module, false));
+
+    // end source content
+
+    var confetti = module.exports;
+    module.exports.create;
+
     /* src/components/Question.svelte generated by Svelte v3.32.3 */
     const file = "src/components/Question.svelte";
 
@@ -465,7 +1062,7 @@ var app = (function () {
     			p = element("p");
     			t = text(/*description*/ ctx[0]);
     			attr_dev(p, "class", "card-text");
-    			add_location(p, file, 4, 12, 142);
+    			add_location(p, file, 4, 12, 147);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -505,7 +1102,7 @@ var app = (function () {
     			t = text(t_value);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", button_class_value = "btn " + /*answer*/ ctx[6].class);
-    			add_location(button, file, 8, 16, 338);
+    			add_location(button, file, 8, 16, 343);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -585,12 +1182,12 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr_dev(h3, "class", "card-title");
+    			attr_dev(h3, "class", "card-title mb-3");
     			add_location(h3, file, 2, 8, 68);
     			attr_dev(div0, "class", "btn-group btn-group-lg d-flex");
     			attr_dev(div0, "role", "group");
     			attr_dev(div0, "aria-label", "Antwoorden");
-    			add_location(div0, file, 6, 8, 203);
+    			add_location(div0, file, 6, 8, 208);
     			attr_dev(div1, "class", "card-body");
     			add_location(div1, file, 1, 4, 36);
     			attr_dev(div2, "class", div2_class_value = "card card-" + /*type*/ ctx[1]);
@@ -803,7 +1400,7 @@ var app = (function () {
     const file$1 = "src/components/Answer.svelte";
 
     // (4:8) {#if description}
-    function create_if_block$1(ctx) {
+    function create_if_block_1(ctx) {
     	let p;
     	let t;
 
@@ -812,7 +1409,7 @@ var app = (function () {
     			p = element("p");
     			t = text(/*description*/ ctx[0]);
     			attr_dev(p, "class", "card-text");
-    			add_location(p, file$1, 4, 12, 142);
+    			add_location(p, file$1, 4, 12, 147);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -828,9 +1425,58 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$1.name,
+    		id: create_if_block_1.name,
     		type: "if",
     		source: "(4:8) {#if description}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (8:8) {#if link}
+    function create_if_block$1(ctx) {
+    	let p;
+    	let i;
+    	let t0;
+    	let a;
+    	let t1;
+
+    	const block = {
+    		c: function create() {
+    			p = element("p");
+    			i = element("i");
+    			t0 = text("Check voor de zekerheid ");
+    			a = element("a");
+    			t1 = text("de tabel op Rijksoverheid.nl");
+    			attr_dev(a, "href", /*link*/ ctx[3]);
+    			add_location(a, file$1, 9, 43, 298);
+    			add_location(i, file$1, 9, 16, 271);
+    			attr_dev(p, "class", "card-text");
+    			add_location(p, file$1, 8, 12, 233);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, p, anchor);
+    			append_dev(p, i);
+    			append_dev(i, t0);
+    			append_dev(i, a);
+    			append_dev(a, t1);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*link*/ 8) {
+    				attr_dev(a, "href", /*link*/ ctx[3]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(p);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(8:8) {#if link}",
     		ctx
     	});
 
@@ -843,8 +1489,10 @@ var app = (function () {
     	let h3;
     	let t0;
     	let t1;
+    	let t2;
     	let div1_class_value;
-    	let if_block = /*description*/ ctx[0] && create_if_block$1(ctx);
+    	let if_block0 = /*description*/ ctx[0] && create_if_block_1(ctx);
+    	let if_block1 = /*link*/ ctx[3] && create_if_block$1(ctx);
 
     	const block = {
     		c: function create() {
@@ -853,8 +1501,10 @@ var app = (function () {
     			h3 = element("h3");
     			t0 = text(/*text*/ ctx[2]);
     			t1 = space();
-    			if (if_block) if_block.c();
-    			attr_dev(h3, "class", "card-title");
+    			if (if_block0) if_block0.c();
+    			t2 = space();
+    			if (if_block1) if_block1.c();
+    			attr_dev(h3, "class", "card-title mb-3");
     			add_location(h3, file$1, 2, 8, 68);
     			attr_dev(div0, "class", "card-body");
     			add_location(div0, file$1, 1, 4, 36);
@@ -870,22 +1520,37 @@ var app = (function () {
     			append_dev(div0, h3);
     			append_dev(h3, t0);
     			append_dev(div0, t1);
-    			if (if_block) if_block.m(div0, null);
+    			if (if_block0) if_block0.m(div0, null);
+    			append_dev(div0, t2);
+    			if (if_block1) if_block1.m(div0, null);
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*text*/ 4) set_data_dev(t0, /*text*/ ctx[2]);
 
     			if (/*description*/ ctx[0]) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$1(ctx);
-    					if_block.c();
-    					if_block.m(div0, null);
+    					if_block0 = create_if_block_1(ctx);
+    					if_block0.c();
+    					if_block0.m(div0, t2);
     				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
+
+    			if (/*link*/ ctx[3]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block$1(ctx);
+    					if_block1.c();
+    					if_block1.m(div0, null);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
     			}
 
     			if (dirty & /*type*/ 2 && div1_class_value !== (div1_class_value = "card card-" + /*type*/ ctx[1])) {
@@ -896,7 +1561,8 @@ var app = (function () {
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div1);
-    			if (if_block) if_block.d();
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
     		}
     	};
 
@@ -917,7 +1583,9 @@ var app = (function () {
     	let { description } = $$props;
     	let { type } = $$props;
     	let { text } = $$props;
-    	const writable_props = ["description", "type", "text"];
+    	let { link } = $$props;
+    	let { confetti } = $$props;
+    	const writable_props = ["description", "type", "text", "link", "confetti"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Answer> was created with unknown prop '${key}'`);
@@ -927,27 +1595,38 @@ var app = (function () {
     		if ("description" in $$props) $$invalidate(0, description = $$props.description);
     		if ("type" in $$props) $$invalidate(1, type = $$props.type);
     		if ("text" in $$props) $$invalidate(2, text = $$props.text);
+    		if ("link" in $$props) $$invalidate(3, link = $$props.link);
+    		if ("confetti" in $$props) $$invalidate(4, confetti = $$props.confetti);
     	};
 
-    	$$self.$capture_state = () => ({ description, type, text });
+    	$$self.$capture_state = () => ({ description, type, text, link, confetti });
 
     	$$self.$inject_state = $$props => {
     		if ("description" in $$props) $$invalidate(0, description = $$props.description);
     		if ("type" in $$props) $$invalidate(1, type = $$props.type);
     		if ("text" in $$props) $$invalidate(2, text = $$props.text);
+    		if ("link" in $$props) $$invalidate(3, link = $$props.link);
+    		if ("confetti" in $$props) $$invalidate(4, confetti = $$props.confetti);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [description, type, text];
+    	return [description, type, text, link, confetti];
     }
 
     class Answer extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { description: 0, type: 1, text: 2 });
+
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, {
+    			description: 0,
+    			type: 1,
+    			text: 2,
+    			link: 3,
+    			confetti: 4
+    		});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -969,6 +1648,14 @@ var app = (function () {
 
     		if (/*text*/ ctx[2] === undefined && !("text" in props)) {
     			console.warn("<Answer> was created without expected prop 'text'");
+    		}
+
+    		if (/*link*/ ctx[3] === undefined && !("link" in props)) {
+    			console.warn("<Answer> was created without expected prop 'link'");
+    		}
+
+    		if (/*confetti*/ ctx[4] === undefined && !("confetti" in props)) {
+    			console.warn("<Answer> was created without expected prop 'confetti'");
     		}
     	}
 
@@ -993,6 +1680,22 @@ var app = (function () {
     	}
 
     	set text(value) {
+    		throw new Error("<Answer>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get link() {
+    		throw new Error("<Answer>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set link(value) {
+    		throw new Error("<Answer>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get confetti() {
+    		throw new Error("<Answer>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set confetti(value) {
     		throw new Error("<Answer>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
@@ -1348,7 +2051,7 @@ var app = (function () {
         '1': {
             'type': Question,
             'text': 'Werk je in de zorg?',
-            'description': 'Als zorgverlener',
+            'description': 'Als zorgverlener, arts of andere uitvoerende rol?',
             'answers': [
                 {
                     'text': "Ja",
@@ -1365,7 +2068,7 @@ var app = (function () {
         '2': {
             'type': Question,
             'text': 'Ben je 60 jaar of ouder?',
-            'description': 'Longer text here....',
+            'description': 'Je leeftijd bepaald wanneer je het vaccin krijgt',
             'answers': [
                 {
                     'text': "Ja",
@@ -1382,7 +2085,6 @@ var app = (function () {
         '3': {
             'type': Question,
             'text': 'Woon je in een kleinschalige woonvorm of heb je een verstandelijke beperking en woon je in een instelling?',
-            'description': 'Longer text here....',
             'answers': [
                 {
                     'text': "Ja",
@@ -1398,8 +2100,7 @@ var app = (function () {
         },
         '4': {
             'type': Question,
-            'text': 'Woon e op st. Eustasius of Saba?',
-            'description': 'Longer text here....',
+            'text': 'Woon je op St. Eustasius of Saba?',
             'answers': [
                 {
                     'text': "Ja",
@@ -1415,7 +2116,7 @@ var app = (function () {
         },
         '100': {
             'type': QuestionList,
-            'text': 'Bij wat voor soort zorg organisatie werkt u?',
+            'text': 'Bij wat voor soort zorg organisatie werk je?',
             'answers': [
                 {
                     'text': "Een verpleeghuis",
@@ -1431,54 +2132,84 @@ var app = (function () {
                 },
                 {
                     'text': "Wijkverpleging, WMO ondersteuning of PGB zorgverleners",
-                    'newState': '102'
+                    'newState': '104'
                 },
                 {
                     'text': "Een ambulance",
                     'newState': '103'
                 },
                 {
-                    'text': "Klinish medische specialistische, revalidatie of gehandicaptenzorg",
+                    'text': "Klinish medische specialistische revalidatie of gehandicaptenzorg",
                     'newState': '102'
                 },
                 {
                     'text': "Bij een zorgorganisatie op de waddeneilanden",
+                    'newState': '105'
+                },
+                {
+                    'text': "Bij een zorgorganisatie op de BES & CAS eilanden",
                     'newState': '102'
                 },
                 {
-                    'text': "Bij een zorgorganisatie op DE BES & CAS eilanden",
-                    'newState': '102'
-                },
+                    'text': "Wel in de zorg maar niet in eerder genoemde",
+                    'newState': '101'
+                }
             ]
         },
         '101': {
             'type': Answer,
-            'text': 'Ja! Je ontvangt een brief per post voor een datum!'
+            'text': 'Vanaf mei is het mogelijk dat je het vaccin zou kunnen ontvangen',
+            'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers',
+            'confetti': true,
         },
         '102': {
             'type': Answer,
-            'text': 'Ja! Je krijgt een uitnodiging voor een vaccin bij een GGD priklocatie'
+            'text': 'Je krijgt een uitnodiging voor een vaccin bij een GGD priklocatie',
+            'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers',
+            'confetti': true,
         },
         '103': {
             'type': Answer,
-            'text': 'Vraag je leidinggevende voor een vaccin in het ziekenhuis'
+            'text': 'Vraag je leidinggevende voor een vaccin in het ziekenhuis',
+            'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers',
+            'confetti': true,
+        },
+        '104': {
+            'type': Answer,
+            'text': 'Vanaf begin maart kan je een vaccin krijgen',
+            'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers'
+        },
+        '105': {
+            'type': Answer,
+            'text': 'Je kan het vaccin krijgen via de GGD of de huisarts',
+            'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers',
+            'confetti': true,
         },
         '200': {
             'type': Answer,
-            'text': 'Je ontvangt een bericht wanneer je een vaccin krijgt',
-            'description': 'Je ontvangt een brief wanneer je een vaccin krijgt of je krijgt een bericht van je huisarts'
+            'text': 'Je ontvangt een bericht wanneer je een vaccin kan ontvangen',
+            'description': 'Je ontvangt een brief wanneer je een vaccin krijgt of je krijgt een bericht van je huisarts',
+            'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
+            'confetti': true,
         },
         '300': {
             'type': Answer,
-            'text': 'Vraag je instellings arts wanneer je een vaccin kunt krijgt'
+            'text': 'Vraag je instellings arts wanneer je een vaccin kan ontvangen',
+            'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken'
         },
         '400': {
             'type': Answer,
-            'text': 'Je ontvangt een brief van de GGD voor het vaccin'
+            'text': 'Je ontvangt een brief van de GGD voor het vaccin',
+            'description': 'Je ontvangt een brief wanneer je een vaccin krijgt of je krijgt een bericht van je huisarts',
+            'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
+            'confetti': true,
         },
         '500': {
             'type': Answer,
-            'text': 'De verwachting is dat het vaccin vanaf mei beschikbaar is.'
+            'text': 'De verwachting is dat het vaccin vanaf mei beschikbaar is.',
+            'description': 'Zodra er speciekere data beschikbaar is vullen we dit aan!',
+            'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken'
+
         }
     };
 
@@ -1488,7 +2219,7 @@ var app = (function () {
     const file$3 = "src/App.svelte";
 
     // (28:28) 
-    function create_if_block_1(ctx) {
+    function create_if_block_1$1(ctx) {
     	let div2;
     	let h3;
     	let t1;
@@ -1506,15 +2237,42 @@ var app = (function () {
     	let t9;
     	let p1;
     	let t11;
-    	let h41;
-    	let t13;
     	let p2;
-    	let t14;
-    	let code;
-    	let t16;
-    	let t17;
-    	let div1;
+    	let t12;
     	let a2;
+    	let t14;
+    	let t15;
+    	let h41;
+    	let t17;
+    	let p3;
+    	let t18;
+    	let a3;
+    	let t20;
+    	let a4;
+    	let t22;
+    	let a5;
+    	let t24;
+    	let a6;
+    	let t26;
+    	let t27;
+    	let h42;
+    	let t29;
+    	let p4;
+    	let t30;
+    	let a7;
+    	let t32;
+    	let t33;
+    	let h43;
+    	let t35;
+    	let p5;
+    	let t36;
+    	let a8;
+    	let t38;
+    	let code;
+    	let t40;
+    	let t41;
+    	let div1;
+    	let a9;
     	let mounted;
     	let dispose;
 
@@ -1543,18 +2301,54 @@ var app = (function () {
     			p1 = element("p");
     			p1.textContent = "Wij doen ons best om de volgorde en data up to date te houden, maar bevestig altijd de uitkomst met de data van de rijksoverheid zelf. Er kunnen dus absoluut geen rechten worden ontleend aan deze website.";
     			t11 = space();
-    			h41 = element("h4");
-    			h41.textContent = "Privacy & data verzameling";
-    			t13 = space();
     			p2 = element("p");
-    			t14 = text("Er wordt op deze website geen enkele data verzameld of verzonden naar derden. Geen cookies & geen tracking. \n\t\t\t\t\t\tDe pagina's staan gehost op Github, als mede ook alle code, dus die kan je zelf ook bekijken. \n\t\t\t\t\t\tDaarnaast maken we gebruik van Cloudflare for caching en de beveiligde verbinding (");
+    			t12 = text("Vind je een bug of klopt de data niet meer? Laat het ons weten door het aanmaken ");
+    			a2 = element("a");
+    			a2.textContent = "van een Github issue";
+    			t14 = text(".");
+    			t15 = space();
+    			h41 = element("h4");
+    			h41.textContent = "Wie heeft dit bedacht?";
+    			t17 = space();
+    			p3 = element("p");
+    			t18 = text("Door een borrel en een avondje puzzelen met de tabellen van de Rijksoverheid vroegen ");
+    			a3 = element("a");
+    			a3.textContent = "Arjan Sammani";
+    			t20 = text(", ");
+    			a4 = element("a");
+    			a4.textContent = "Chantal van Kempen";
+    			t22 = text(", ");
+    			a5 = element("a");
+    			a5.textContent = "Channah Ruiter";
+    			t24 = text(" & ");
+    			a6 = element("a");
+    			a6.textContent = "Joost Plattel";
+    			t26 = text(" zich af of dat \n\t\t\t\t\t\tmakkelijker kon. En zo geschiedde, van idee tot simpel vragenlijstje in een weekend!");
+    			t27 = space();
+    			h42 = element("h4");
+    			h42.textContent = "En verder?";
+    			t29 = space();
+    			p4 = element("p");
+    			t30 = text("Ben je van de Rijksoverheid en vind je het interessant om dit verder op te pakken zodat het wat makkelijk wordt? Of ben je van de pers en nieuwsgierig naar het hele verhaal? Volg dan ");
+    			a7 = element("a");
+    			a7.textContent = "Joost op twitter";
+    			t32 = text(" en stuur een DM/mention.");
+    			t33 = space();
+    			h43 = element("h4");
+    			h43.textContent = "Privacy & data verzameling";
+    			t35 = space();
+    			p5 = element("p");
+    			t36 = text("Er wordt op deze website geen enkele data verzameld of verzonden naar derden. Geen cookies & geen tracking. \n\t\t\t\t\t\tDe pagina's staan gehost op ");
+    			a8 = element("a");
+    			a8.textContent = "Github";
+    			t38 = text(", als mede ook alle code, dus die kan je zelf ook bekijken. \n\t\t\t\t\t\tDaarnaast maken we gebruik van Cloudflare for caching en de beveiligde verbinding (");
     			code = element("code");
     			code.textContent = "https";
-    			t16 = text(").");
-    			t17 = space();
+    			t40 = text(").");
+    			t41 = space();
     			div1 = element("div");
-    			a2 = element("a");
-    			a2.textContent = "« terug naar de vragen";
+    			a9 = element("a");
+    			a9.textContent = "« terug naar de vragen";
     			add_location(h3, file$3, 30, 4, 1712);
     			add_location(h40, file$3, 33, 5, 1761);
     			add_location(p0, file$3, 35, 5, 1804);
@@ -1566,16 +2360,35 @@ var app = (function () {
     			add_location(li1, file$3, 43, 6, 2421);
     			add_location(ul, file$3, 41, 5, 2219);
     			add_location(p1, file$3, 46, 5, 2664);
-    			add_location(h41, file$3, 49, 5, 2883);
-    			add_location(code, file$3, 54, 89, 3234);
-    			add_location(p2, file$3, 51, 5, 2925);
+    			attr_dev(a2, "href", "https://github.com/jplattel/magikalprikken.nl/issues/new");
+    			add_location(a2, file$3, 48, 89, 2966);
+    			add_location(p2, file$3, 48, 5, 2882);
+    			add_location(h41, file$3, 50, 5, 3069);
+    			attr_dev(a3, "href", "https://nl.linkedin.com/in/arjan-sammani");
+    			add_location(a3, file$3, 53, 91, 3202);
+    			attr_dev(a4, "href", "http://chantalvankempen.nl/");
+    			add_location(a4, file$3, 53, 161, 3272);
+    			attr_dev(a5, "href", "https://psychologenpraktijkruiter.nl/");
+    			add_location(a5, file$3, 53, 223, 3334);
+    			attr_dev(a6, "href", "https://jplattel.nl/");
+    			add_location(a6, file$3, 53, 292, 3403);
+    			add_location(p3, file$3, 52, 5, 3107);
+    			add_location(h42, file$3, 57, 5, 3575);
+    			attr_dev(a7, "href", "https://twitter.com/jplattel");
+    			add_location(a7, file$3, 60, 189, 3794);
+    			add_location(p4, file$3, 59, 5, 3601);
+    			add_location(h43, file$3, 63, 5, 3895);
+    			attr_dev(a8, "href", "https://github.com/jplattel/magikalprikken.nl");
+    			add_location(a8, file$3, 67, 34, 4090);
+    			add_location(code, file$3, 68, 89, 4306);
+    			add_location(p5, file$3, 65, 5, 3937);
     			attr_dev(div0, "class", "text-start");
     			add_location(div0, file$3, 32, 4, 1731);
-    			attr_dev(a2, "href", "#");
-    			attr_dev(a2, "class", "btn btn-outline-primary");
-    			add_location(a2, file$3, 58, 5, 3310);
+    			attr_dev(a9, "href", "#");
+    			attr_dev(a9, "class", "btn btn-outline-primary");
+    			add_location(a9, file$3, 72, 5, 4382);
     			attr_dev(div1, "class", "d-grid mb-3");
-    			add_location(div1, file$3, 57, 4, 3279);
+    			add_location(div1, file$3, 71, 4, 4351);
     			attr_dev(div2, "class", "col-md-8");
     			add_location(div2, file$3, 28, 3, 1684);
     		},
@@ -1597,18 +2410,45 @@ var app = (function () {
     			append_dev(div0, t9);
     			append_dev(div0, p1);
     			append_dev(div0, t11);
-    			append_dev(div0, h41);
-    			append_dev(div0, t13);
     			append_dev(div0, p2);
+    			append_dev(p2, t12);
+    			append_dev(p2, a2);
     			append_dev(p2, t14);
-    			append_dev(p2, code);
-    			append_dev(p2, t16);
-    			append_dev(div2, t17);
+    			append_dev(div0, t15);
+    			append_dev(div0, h41);
+    			append_dev(div0, t17);
+    			append_dev(div0, p3);
+    			append_dev(p3, t18);
+    			append_dev(p3, a3);
+    			append_dev(p3, t20);
+    			append_dev(p3, a4);
+    			append_dev(p3, t22);
+    			append_dev(p3, a5);
+    			append_dev(p3, t24);
+    			append_dev(p3, a6);
+    			append_dev(p3, t26);
+    			append_dev(div0, t27);
+    			append_dev(div0, h42);
+    			append_dev(div0, t29);
+    			append_dev(div0, p4);
+    			append_dev(p4, t30);
+    			append_dev(p4, a7);
+    			append_dev(p4, t32);
+    			append_dev(div0, t33);
+    			append_dev(div0, h43);
+    			append_dev(div0, t35);
+    			append_dev(div0, p5);
+    			append_dev(p5, t36);
+    			append_dev(p5, a8);
+    			append_dev(p5, t38);
+    			append_dev(p5, code);
+    			append_dev(p5, t40);
+    			append_dev(div2, t41);
     			append_dev(div2, div1);
-    			append_dev(div1, a2);
+    			append_dev(div1, a9);
 
     			if (!mounted) {
-    				dispose = listen_dev(a2, "click", /*readMore*/ ctx[4], false, false, false);
+    				dispose = listen_dev(a9, "click", /*readMore*/ ctx[4], false, false, false);
     				mounted = true;
     			}
     		},
@@ -1624,7 +2464,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1.name,
+    		id: create_if_block_1$1.name,
     		type: "if",
     		source: "(28:28) ",
     		ctx
@@ -1867,7 +2707,7 @@ var app = (function () {
     	let current_block_type_index;
     	let if_block;
     	let current;
-    	const if_block_creators = [create_if_block$3, create_if_block_1];
+    	const if_block_creators = [create_if_block$3, create_if_block_1$1];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
@@ -1980,10 +2820,25 @@ var app = (function () {
     	validate_slots("App", slots, []);
     	let state = "1";
     	let page = "start";
+    	var conffetiCanvas = confetti.create(document.getElementById("confettiCanvas"), { resize: true, useWorker: true });
 
     	const setState = event => {
     		console.log("Setting state:", event.detail.newState);
     		$$invalidate(0, state = event.detail.newState);
+
+    		if (steps[state].confetti && steps[state].confetti === true) {
+    			console.log("Confetti!");
+
+    			// confetti();
+    			conffetiCanvas({
+    				particleCount: 100,
+    				spread: 30,
+    				angle: 60,
+    				origin: { y: 0.5, x: 0.5 },
+    				colors: ["#abbbd5", "#feec34", "#e2e6ea"],
+    				shapes: ["circle"]
+    			});
+    		}
     	};
 
     	const reset = () => $$invalidate(0, state = 1);
@@ -2003,11 +2858,13 @@ var app = (function () {
     	});
 
     	$$self.$capture_state = () => ({
+    		confetti,
     		Question,
     		Answer,
     		steps,
     		state,
     		page,
+    		conffetiCanvas,
     		setState,
     		reset,
     		readMore
@@ -2016,6 +2873,7 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("state" in $$props) $$invalidate(0, state = $$props.state);
     		if ("page" in $$props) $$invalidate(1, page = $$props.page);
+    		if ("conffetiCanvas" in $$props) conffetiCanvas = $$props.conffetiCanvas;
     	};
 
     	if ($$props && "$$inject" in $$props) {

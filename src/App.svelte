@@ -46,12 +46,26 @@
 
 					<p>Wij doen ons best om de volgorde en data up to date te houden, maar bevestig altijd de uitkomst met de data van de rijksoverheid zelf. Er kunnen dus absoluut geen rechten worden ontleend aan deze website.</p>
 
+					<p>Vind je een bug of klopt de data niet meer? Laat het ons weten door het aanmaken <a href="https://github.com/jplattel/magikalprikken.nl/issues/new">van een Github issue</a>.</p>
+
+					<h4>Wie heeft dit bedacht?</h4>
+
+					<p>
+						Door een borrel en een avondje puzzelen met de tabellen van de Rijksoverheid vroegen <a href="https://nl.linkedin.com/in/arjan-sammani">Arjan Sammani</a>, <a href="http://chantalvankempen.nl/">Chantal van Kempen</a>, <a href="https://psychologenpraktijkruiter.nl/">Channah Ruiter</a> & <a href="https://jplattel.nl/">Joost Plattel</a> zich af of dat 
+						makkelijker kon. En zo geschiedde, van idee tot simpel vragenlijstje in een weekend!
+					</p>
+
+					<h4>En verder?</h4>
+
+					<p>
+						Ben je van de Rijksoverheid en vind je het interessant om dit verder op te pakken zodat het wat makkelijk wordt? Of ben je van de pers en nieuwsgierig naar het hele verhaal? Volg dan <a href="https://twitter.com/jplattel">Joost op twitter</a> en stuur een DM/mention.
+					</p>
 
 					<h4>Privacy & data verzameling</h4>
 
 					<p>
 						Er wordt op deze website geen enkele data verzameld of verzonden naar derden. Geen cookies & geen tracking. 
-						De pagina's staan gehost op Github, als mede ook alle code, dus die kan je zelf ook bekijken. 
+						De pagina's staan gehost op <a href="https://github.com/jplattel/magikalprikken.nl">Github</a>, als mede ook alle code, dus die kan je zelf ook bekijken. 
 						Daarnaast maken we gebruik van Cloudflare for caching en de beveiligde verbinding (<code>https</code>).</p>
 				</div>
 				
@@ -64,16 +78,38 @@
 </main>
 
 <script>
-	import Question from './components/Question.svelte'
-	import Answer from './components/Answer.svelte'
+	import confetti from "canvas-confetti";
+	import Question from './components/Question.svelte';
+	import Answer from './components/Answer.svelte';
 	import steps from "./tree";
 	
 	let state = '1';
-	let page = 'start'
+	let page = 'start';
+
+	var conffetiCanvas = confetti.create(document.getElementById('confettiCanvas'), {
+		resize: true,
+		useWorker: true
+	});
 
 	const setState = (event) => {
-		console.log('Setting state:', event.detail.newState)
+		console.log('Setting state:', event.detail.newState);
 		state = event.detail.newState;
+
+		if (steps[state].confetti && steps[state].confetti === true) {
+			console.log("Confetti!")
+			// confetti();
+			conffetiCanvas({
+				particleCount: 100,
+				spread: 30,
+				angle: 60,
+				origin: {
+					y: 0.5,
+					x: 0.5,
+				},
+				colors: ['#abbbd5', '#feec34', '#e2e6ea'],
+				shapes: ['circle']
+			});
+		}
 	}
 
 	const reset = () => state = 1;
