@@ -86,34 +86,21 @@
 	let state = '1';
 	let page = 'start';
 
-	var conffetiCanvas = confetti.create(document.getElementById('confettiCanvas'), {
-		resize: true,
-		useWorker: true
-	});
-
+	// After answering, a question fires and 'answer' event for which we listen
 	const setState = (event) => {
-		console.log('Setting state:', event.detail.newState);
+		console.debug('Setting state:', event.detail.newState);
 		state = event.detail.newState;
-
+		
+		// TODO, still need to add confetti
 		if (steps[state].confetti && steps[state].confetti === true) {
-			console.log("Confetti!")
-			// confetti();
-			conffetiCanvas({
-				particleCount: 100,
-				spread: 30,
-				angle: 60,
-				origin: {
-					y: 0.5,
-					x: 0.5,
-				},
-				colors: ['#abbbd5', '#feec34', '#e2e6ea'],
-				shapes: ['circle']
-			});
+			console.debug("Throw some confetti!")
 		}
 	}
 
+	// Back to the first question
 	const reset = () => state = 1;
 
+	// Instead of toggle, this allows for more pages if we need those later...
 	const readMore = () => {
 		if (page === 'start') {
 			page = 'info'

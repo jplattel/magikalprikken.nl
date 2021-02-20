@@ -2820,29 +2820,22 @@ var app = (function () {
     	validate_slots("App", slots, []);
     	let state = "1";
     	let page = "start";
-    	var conffetiCanvas = confetti.create(document.getElementById("confettiCanvas"), { resize: true, useWorker: true });
 
+    	// After answering, a question fires and 'answer' event for which we listen
     	const setState = event => {
-    		console.log("Setting state:", event.detail.newState);
+    		console.debug("Setting state:", event.detail.newState);
     		$$invalidate(0, state = event.detail.newState);
 
+    		// TODO, still need to add confetti
     		if (steps[state].confetti && steps[state].confetti === true) {
-    			console.log("Confetti!");
-
-    			// confetti();
-    			conffetiCanvas({
-    				particleCount: 100,
-    				spread: 30,
-    				angle: 60,
-    				origin: { y: 0.5, x: 0.5 },
-    				colors: ["#abbbd5", "#feec34", "#e2e6ea"],
-    				shapes: ["circle"]
-    			});
+    			console.debug("Throw some confetti!");
     		}
     	};
 
+    	// Back to the first question
     	const reset = () => $$invalidate(0, state = 1);
 
+    	// Instead of toggle, this allows for more pages if we need those later...
     	const readMore = () => {
     		if (page === "start") {
     			$$invalidate(1, page = "info");
@@ -2864,7 +2857,6 @@ var app = (function () {
     		steps,
     		state,
     		page,
-    		conffetiCanvas,
     		setState,
     		reset,
     		readMore
@@ -2873,7 +2865,6 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("state" in $$props) $$invalidate(0, state = $$props.state);
     		if ("page" in $$props) $$invalidate(1, page = $$props.page);
-    		if ("conffetiCanvas" in $$props) conffetiCanvas = $$props.conffetiCanvas;
     	};
 
     	if ($$props && "$$inject" in $$props) {
