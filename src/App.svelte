@@ -48,12 +48,36 @@
 
 					<p>Vind je een bug of klopt de data niet meer? Laat het ons weten door het aanmaken <a href="https://github.com/jplattel/magikalprikken.nl/issues/new">van een Github issue</a>.</p>
 
-					<h4>Wie heeft dit bedacht?</h4>
+					<h4>Wie heeft dit bedacht en waarom?</h4>
 
 					<p>
-						Door een borrel en een avondje puzzelen met de tabellen van de Rijksoverheid vroegen <a href="https://nl.linkedin.com/in/arjan-sammani">Arjan Sammani</a>, <a href="http://chantalvankempen.nl/">Chantal van Kempen</a>, <a href="https://psychologenpraktijkruiter.nl/">Channah Ruiter</a> & <a href="https://jplattel.nl/">Joost Plattel</a> zich af of dat 
-						makkelijker kon. En zo geschiedde, van idee tot simpel vragenlijstje in een weekend!
+						Wij (<a href="https://nl.linkedin.com/in/arjan-sammani">Arjan</a>, <a href="https://www.linkedin.com/in/chantalvankempen/">Chantal</a>, <a href="https://www.linkedin.com/in/channah-ruiter/">Channah</a> & <a href="https://jplattel.nl">Joost</a>) hebben in een avond dit systeem bedacht en gemaakt.
+						Dit systeem heeft een simpel doel: mensen informeren wanneer en hoe ze worden geprikt. We
+						snappen ook niet waarom het zo moeilijk was, maar nemen je graag mee in het verhaal. Het
+						begon allemaal zo.
 					</p>
+					<p>
+						De ouders van Chantal zouden mogelijk in aanmerking komen voor een COVID-19 vaccin, maar
+						was dat ook echt zo? Chantal, opgeleid psychologe en nu consultant (waarom dit ertoe doet
+						vertellen we je zo) keek op de website van de overheid maar kwam er niet uit. Krijgen haar
+						ouders nou een prik? Wanneer dan? En hoe?
+					</p>
+					<p>
+						Ze vroegen het Arjan (Arts, oprichter van <a href="http://vaccinatie-team.nl/">Stichting Vaccinatie-Team</a>, ervaring op Corona afdeling, 
+						die zal het vast weten). Die wist het ook niet, dus
+						hij keek op de website van de Rijksoverheid (die organisatie die ons ook een tip gaf over hoe
+						voetbal te kijken en sneeuwballen te gooien tijdens corona). Samen met Channah (praktiserend
+						psycholoog) en Joost (ondernemer & data strateeg) kwamen we er ook niet uit.
+					</p>
+					<p>
+						Dus waarom is het belangrijk dat Chantal consultant is, Arjan arts, Channah psycholoog en
+						Joost data-strateeg? Omdat deze club semi-intellectuelen het systeem blijkbaar ook niet
+						snappen. Dan zijn wij niet slim genoeg of is de uitleg te complex (of beiden 🤓). 
+					</p>
+					<p>
+						We denken niet dat het ligt aan de Rijksoverheid, maar aan de complexe onderneming die het vaccineren
+						geworden is. Dus vandaar <a href="magikalprikken.nl">magikalprikken.nl</a> als oplossing!
+					</p> 
 
 					<h4>En verder?</h4>
 
