@@ -39,7 +39,7 @@ export default {
     },
     '3': {
         'type': Question,
-        'text': 'Woon je in een kleinschalige woonvorm of heb je een verstandelijke beperking en woon je in een instelling?',
+        'text': 'Woon je in een kleinschalige woonvorm OF heb je een verstandelijke beperking en woon je in een instelling?',
         'answers': [
             {
                 'text': "Ja",
@@ -55,7 +55,7 @@ export default {
     },
     '4': {
         'type': Question,
-        'text': 'Woon je op St. Eustasius of Saba?',
+        'text': 'Woon je op st. Eustasius of Saba?',
         'answers': [
             {
                 'text': "Ja",
