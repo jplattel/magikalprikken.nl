@@ -4,9 +4,9 @@
         {#if description} 
             <p class="card-text">{description}</p>
         {/if}
-        <div class="btn-group btn-group-lg d-flex" role="group" aria-label="Antwoorden">
+        <div class="btn-group-vertical btn-group-lg d-flex" role="group" aria-label="Antwoorden">
             {#each answers as answer}
-                <button type="button" class="btn {answer.class}" on:click={clickAnswer(answer.newState)}>{answer.text}</button>
+                <button type="button" class="btn btn-outline-secondary" on:click={clickAnswer(answer.newState)}>{answer.text}</button>
             {/each}
         </div>
     </div>
@@ -26,4 +26,6 @@
 			newState: newState
 		});
 	}
+
+    
 </script>

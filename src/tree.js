@@ -1,4 +1,5 @@
 import Question from './components/Question.svelte';
+import QuestionList from './components/QuestionList.svelte';
 import Answer from './components/Answer.svelte';
 
 export default {
@@ -71,15 +72,54 @@ export default {
         ]
     },
     '100': {
-        'type': Question,
+        'type': QuestionList,
         'text': 'Bij wat voor soort zorg organisatie werkt u?',
         'answers': [
-
+            {
+                'text': "Een verpleeghuis",
+                'newState': '102'
+            },
+            {
+                'text': "Directe COVID zorg in een ziekenhuis",
+                'newState': '103'
+            },
+            {
+                'text': "GGZ en crisisdienst",
+                'newState': '102'
+            },
+            {
+                'text': "Wijkverpleging, WMO ondersteuning of PGB zorgverleners",
+                'newState': '102'
+            },
+            {
+                'text': "Een ambulance",
+                'newState': '103'
+            },
+            {
+                'text': "Klinish medische specialistische, revalidatie of gehandicaptenzorg",
+                'newState': '102'
+            },
+            {
+                'text': "Bij een zorgorganisatie op de waddeneilanden",
+                'newState': '102'
+            },
+            {
+                'text': "Bij een zorgorganisatie op DE BES & CAS eilanden",
+                'newState': '102'
+            },
         ]
     },
     '101': {
         'type': Answer,
         'text': 'Ja! Je ontvangt een brief per post voor een datum!'
+    },
+    '102': {
+        'type': Answer,
+        'text': 'Ja! Je krijgt een uitnodiging voor een vaccin bij een GGD priklocatie'
+    },
+    '103': {
+        'type': Answer,
+        'text': 'Vraag je leidinggevende voor een vaccin in het ziekenhuis'
     },
     '200': {
         'type': Answer,
