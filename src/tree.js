@@ -5,7 +5,7 @@ export default {
     '1': {
         'type': Question,
         'text': 'Werk je in de zorg?',
-        'description': 'Longer text here....',
+        'description': 'Als zorgverlener',
         'answers': [
             {
                 'text': "Ja",
@@ -27,7 +27,7 @@ export default {
             {
                 'text': "Ja",
                 'class': 'btn-success',
-                'newState': '101'
+                'newState': '200'
             },
             {
                 'text': "Nee",
@@ -38,13 +38,13 @@ export default {
     },
     '3': {
         'type': Question,
-        'text': 'Question 3?',
+        'text': 'Woon je in een kleinschalige woonvorm of heb je een verstandelijke beperking en woon je in een instelling?',
         'description': 'Longer text here....',
         'answers': [
             {
                 'text': "Ja",
                 'class': 'btn-success',
-                'newState': '100'
+                'newState': '300'
             },
             {
                 'text': "Nee",
@@ -55,69 +55,47 @@ export default {
     },
     '4': {
         'type': Question,
-        'text': 'Question 4?',
+        'text': 'Woon e op st. Eustasius of Saba?',
         'description': 'Longer text here....',
         'answers': [
             {
                 'text': "Ja",
                 'class': 'btn-success',
-                'newState': '101'
+                'newState': '400'
             },
             {
                 'text': "Nee",
                 'class': 'btn-danger',
-                'newState': '5'
-            }
-        ]
-    },
-    '5': {
-        'type': Question,
-        'text': 'Question 5?',
-        'description': 'Longer text here....',
-        'answers': [
-            {
-                'text': "Ja",
-                'class': 'btn-success',
-                'newState': '101'
-            },
-            {
-                'text': "Nee",
-                'class': 'btn-danger',
-                'newState': '6'
-            }
-        ]
-    },
-    '6': {
-        'type': Question,
-        'text': 'Question 6?',
-        'description': 'Longer text here....',
-        'answers': [
-            {
-                'text': "Ja",
-                'class': 'btn-success',
-                'newState': '102'
-            },
-            {
-                'text': "Nee",
-                'class': 'btn-danger',
-                'newState': '900'
+                'newState': '500'
             }
         ]
     },
     '100': {
-        'type': Answer,
-        'text': 'Ja! Per direct! Neem contact op met je leidingevende!'
+        'type': Question,
+        'text': 'Bij wat voor soort zorg organisatie werkt u?',
+        'answers': [
+
+        ]
     },
     '101': {
         'type': Answer,
         'text': 'Ja! Je ontvangt een brief per post voor een datum!'
     },
-    '102': {
+    '200': {
         'type': Answer,
-        'text': 'Ja in maart neemt de huisarts contact met je opt!'
+        'text': 'Je ontvangt een bericht wanneer je een vaccin krijgt',
+        'description': 'Je ontvangt een brief wanneer je een vaccin krijgt of je krijgt een bericht van je huisarts'
     },
-    '900': {
+    '300': {
         'type': Answer,
-        'text': 'Voorlopig nog niet, de medicijn voorraad is te beperkt om een datum te noemen...'
+        'text': 'Vraag je instellings arts wanneer je een vaccin kunt krijgt'
     },
+    '400': {
+        'type': Answer,
+        'text': 'Je ontvangt een brief van de GGD voor het vaccin'
+    },
+    '500': {
+        'type': Answer,
+        'text': 'De verwachting is dat het vaccin vanaf mei beschikbaar is.'
+    }
 }
