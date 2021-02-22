@@ -20,23 +20,23 @@
 				<p class="text-start">
 					Nieuwsgierig wie dit heeft gemaakt en waarom? Lees er <a href="#" on:click={readMore}>hier</a> meer over. 
 					Vragen of opmerkingen, <a href="https://github.com/jplattel/magikalprikken.nl/issues">maak een issue aan op Github</a>!
-					👋
 					Vind je dit tof? Deel deze pagina dan op <a target="_blank" href="https://twitter.com/intent/tweet?url=https://magikaleenprik.nl/&text=Ook nieuwsgierig wanneer je een COVID-19 vaccin krijgt?&hashtags=covid19,magikaleenprik,magikalprikken,corona,vaccin">Twitter</a> 
-					of <a href="https://www.facebook.com/sharer/sharer.php?u=https://magikaleenprik.nl/" target="_blank">Facebook</a>!
+					of <a href="https://www.facebook.com/sharer/sharer.php?u=https://magikaleenprik.nl/" target="_blank">Facebook</a>! 👋 
 				</p>
 			</div>
 		{:else if page == 'info' }
 			<div class="col-md-8">
 
-				<h3>Over</h3>
+				<h3 class="mb-5">Over <a href="https://magikalprikken.nl">magikalprikken.nl</a> / <a href="https://magikaleenprik.nl">magikaleenprik.nl</a></h3>
 
 				<div class="text-start">
 					<h4>Waarom bestaat deze pagina?</h4>
 
 					<p>
-						De twee beschikbare tabellen van de Rijksoverheid zijn nogal groot en niet gebruiksvriendelijk als je wilt weten wanneer jij een COVID-19 vaccin zou kunnen krijgen.
-						Met deze pagina hopen we dat meer mensen een duidelijk antwoord kunnen te geven. Let wel! Het is altijd goed om dubbel te checken bij de Rijksoverheid zelf, 
-						hiervoor kun je de twee volgende tabellen gebruiken: 
+						De twee beschikbare tabellen van de Rijksoverheid zijn lang/groot en niet gebruiksvriendelijk als je wilt weten wanneer jij een COVID-19 vaccin zou kunnen krijgen.
+						Met deze pagina hopen we dat meer mensen een duidelijk antwoord kunnen te geven. 
+						<strong>Let op! Het is altijd goed om dubbel te checken bij de Rijksoverheid zelf, 
+						hiervoor kun je de twee volgende tabellen gebruiken:</strong> 
 					</p>
 
 					<ul>
@@ -52,27 +52,33 @@
 
 					<p>
 						Wij (<a href="https://nl.linkedin.com/in/arjan-sammani">Arjan</a>, <a href="https://www.linkedin.com/in/chantalvankempen/">Chantal</a>, <a href="https://www.linkedin.com/in/channah-ruiter/">Channah</a> & <a href="https://jplattel.nl">Joost</a>) hebben in een avond dit systeem bedacht en gemaakt.
-						Dit systeem heeft een simpel doel: mensen informeren wanneer en hoe ze worden geprikt. We
+						Dit systeem heeft een simpel doel: mensen informeren wanneer ze worden geprikt. We
 						snappen ook niet waarom het zo moeilijk was, maar nemen je graag mee in het verhaal. Het
 						begon allemaal zo:
 					</p>
 					<p>
+						<i>
 						De ouders van Chantal zouden mogelijk in aanmerking komen voor een COVID-19 vaccin, maar
 						was dat ook echt zo? Chantal, opgeleid psychologe en nu consultant (waarom dit ertoe doet
 						vertellen we je zo) keek op de website van de overheid maar kwam er niet uit. Krijgen haar
 						ouders nou een prik? Wanneer dan? En hoe?
+						</i>
 					</p>
 					<p>
+						<i>
 						Ze vroegen het Arjan (Arts, oprichter van <a href="http://vaccinatie-team.nl/">Stichting Vaccinatie-Team</a>, ervaring op Corona afdeling, 
 						die zal het vast weten). Die wist het ook niet, dus
 						hij keek op de website van de Rijksoverheid (die organisatie die ons ook een tip gaf over hoe
 						voetbal te kijken en sneeuwballen te gooien tijdens corona). Samen met Channah (praktiserend
 						psycholoog) en Joost (ondernemer & data strateeg) kwamen we er ook niet uit.
+						</i>
 					</p>
 					<p>
+						<i>
 						Dus waarom is het belangrijk dat Chantal consultant is, Arjan arts, Channah psycholoog en
 						Joost data-strateeg? Omdat deze club semi-intellectuelen het systeem blijkbaar ook niet
 						snappen. Dan zijn wij niet slim genoeg of is de uitleg te complex (of beiden 🤓). 
+						</i>
 					</p>
 					<p>
 						We denken niet dat het ligt aan de Rijksoverheid, maar aan de complexe onderneming die het vaccineren
@@ -90,7 +96,8 @@
 					<p>
 						Er wordt op deze website geen enkele data verzameld of verzonden naar derden. Geen cookies & geen tracking. 
 						De pagina's staan gehost op <a href="https://github.com/jplattel/magikalprikken.nl">Github</a>, als mede ook alle code, dus die kan je zelf ook bekijken. 
-						Daarnaast maken we gebruik van Cloudflare for caching en de beveiligde verbinding (<code>https</code>).</p>
+						Daarnaast maken we gebruik van Cloudflare for caching en de beveiligde verbinding (<code>https</code>).
+					</p>
 				</div>
 				
 				<div class="d-grid mb-3">
