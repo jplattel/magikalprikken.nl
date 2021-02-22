@@ -116,29 +116,34 @@ export default {
         'text': 'Vanaf mei is het mogelijk dat je het vaccin zou kunnen ontvangen',
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers',
         'confetti': true,
+        'image': 'waiting.gif'
     },
     '102': {
         'type': Answer,
         'text': 'Je krijgt een uitnodiging voor een vaccin bij een GGD priklocatie',
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers',
         'confetti': true,
+        'image': 'mail.gif'
     },
     '103': {
         'type': Answer,
         'text': 'Vraag je leidinggevende voor een vaccin in het ziekenhuis',
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers',
         'confetti': true,
+        'image': 'vaccine.gif'
     },
     '104': {
         'type': Answer,
         'text': 'Vanaf begin maart kan je een vaccin krijgen',
-        'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers'
+        'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers',
+        'image': 'waiting.gif'
     },
     '105': {
         'type': Answer,
         'text': 'Je kan het vaccin krijgen via de GGD of de huisarts',
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers',
         'confetti': true,
+        'image': 'vaccine.gif'
     },
     '200': {
         'type': Answer,
@@ -146,11 +151,13 @@ export default {
         'description': 'Je ontvangt een brief wanneer je een vaccin krijgt of je krijgt een bericht van je huisarts',
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
         'confetti': true,
+        'image': 'mail.gif'
     },
     '300': {
         'type': Answer,
         'text': 'Vraag je instellings arts wanneer je een vaccin kan ontvangen',
-        'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken'
+        'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
+        'image': 'vaccine.gif'
     },
     '400': {
         'type': Answer,
@@ -158,12 +165,13 @@ export default {
         'description': 'Je ontvangt een brief wanneer je een vaccin krijgt of je krijgt een bericht van je huisarts',
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
         'confetti': true,
+        'image': 'mail.gif'
     },
     '500': {
         'type': Answer,
         'text': 'De verwachting is dat het vaccin vanaf mei beschikbaar is.',
         'description': 'Zodra er speciekere data beschikbaar is vullen we dit aan! #duurtlang',
-        'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken'
-
+        'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
+        'image': 'waiting.gif'
     }
 }

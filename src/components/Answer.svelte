@@ -1,4 +1,7 @@
 <div class="card card-{type}" class:border-success="{confetti}" class:text-success="{confetti}">
+    {#if image}
+        <img class="card-img-top" src="/images/{image}" alt="">
+    {/if}
     <div class="card-body">
         <h3 class="card-title mb-3">{text}</h3>
         {#if description} 
@@ -20,4 +23,5 @@
     export let text;
     export let link;
     export let confetti;
+    export let image;
 </script>
