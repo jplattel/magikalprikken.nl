@@ -1,6 +1,6 @@
 <div class="card card-{type}" class:border-success="{confetti}" class:text-success="{confetti}">
     {#if image}
-        <img class="card-img-top" src="/images/{image}" alt="">
+        <img class="card-img-top" src="/images/{image}" alt="{image}">
     {/if}
     <div class="card-body">
         <h3 class="card-title mb-3">{text}</h3>

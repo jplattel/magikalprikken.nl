@@ -88,13 +88,14 @@ export default {
     '100': {
         'type': QuestionList,
         'text': 'Bij wat voor soort zorg organisatie werk je?',
+        'description': 'En in sommige gevallen wat is je functie?',
         'answers': [
             {
                 'text': "Een verpleeghuis",
                 'newState': '102'
             },
             {
-                'text': "Directe COVID zorg in een ziekenhuis",
+                'text': "Directe COVID-19 zorg in een ziekenhuis",
                 'newState': '103'
             },
             {
@@ -106,7 +107,7 @@ export default {
                 'newState': '104'
             },
             {
-                'text': "Een ambulance",
+                'text': "Op de ambulance",
                 'newState': '103'
             },
             {
@@ -122,8 +123,8 @@ export default {
                 'newState': '102'
             },
             {
-                'text': "Wel in de zorg maar niet in eerder genoemde",
-                'newState': '101'
+                'text': "Wel in de zorg maar geen van bovenstaande",
+                'newState': '2'
             }
         ]
     },

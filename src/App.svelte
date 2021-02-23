@@ -1,6 +1,6 @@
 <main class="container text-center">
 	<div class="row justify-content-md-center">
-		<h1 class="my-5">Mag ik al een prik? 💉</h1>	
+		<h1 class="my-5 display-3">Mag ik al een prik?<span class="no-underline"> 💉</span></h1>	
 
 		{#if page == 'start'}
 			<div class="col-md-6">	
@@ -8,12 +8,10 @@
 					<i>Goeie vraag!</i> In plaats van de <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken">tabellen van</a> <a href="https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-zorgmedewerkers">de Rijksoverheid</a> door te speuren 
 					helpen wij jou met een paar vragen te bepalen wanneer je een <strong>COVID-19 vaccin</strong> kan krijgen! 
 				</p>
-				
-				<hr>
 
 				<svelte:component this={steps[state].type} {...steps[state]} on:answer={setState}/>
 				
-				<button class="btn btn-secondary mt-3" id="reset" on:click={reset}>Reset ⟲</button>
+				<button class="btn btn-outline-light mt-3" id="reset" on:click={reset}>Reset ⟲</button>
 
 				<hr>
 
@@ -30,7 +28,7 @@
 				<h3 class="mb-5">Over <a href="https://magikalprikken.nl">magikalprikken.nl</a> / <a href="https://magikaleenprik.nl">magikaleenprik.nl</a></h3>
 
 				<div class="text-start">
-					<h4>Waarom bestaat deze pagina?</h4>
+					<h4 class="mt-5">Waarom bestaat deze pagina?</h4>
 
 					<p>
 						De twee beschikbare tabellen van de Rijksoverheid zijn lang/groot en niet gebruiksvriendelijk als je wilt weten wanneer jij een COVID-19 vaccin zou kunnen krijgen.
@@ -48,7 +46,7 @@
 
 					<p>Vind je een bug of klopt de data niet meer? Laat het ons weten door het aanmaken <a href="https://github.com/jplattel/magikalprikken.nl/issues/new">van een Github issue</a>.</p>
 
-					<h4>Wie heeft dit bedacht en waarom?</h4>
+					<h4 class="mt-5">Wie heeft dit bedacht en waarom?</h4>
 
 					<p>
 						Wij (<a href="https://nl.linkedin.com/in/arjan-sammani">Arjan</a>, <a href="https://www.linkedin.com/in/chantalvankempen/">Chantal</a>, <a href="https://www.linkedin.com/in/channah-ruiter/">Channah</a> & <a href="https://jplattel.nl">Joost</a>) hebben in een avond dit systeem bedacht en gemaakt.
@@ -56,6 +54,7 @@
 						snappen ook niet waarom het zo moeilijk was, maar nemen je graag mee in het verhaal. Het
 						begon allemaal zo:
 					</p>
+					<blockquote>
 					<p>
 						<i>
 						De ouders van Chantal zouden mogelijk in aanmerking komen voor een COVID-19 vaccin, maar
@@ -76,22 +75,23 @@
 					<p>
 						<i>
 						Dus waarom is het belangrijk dat Chantal consultant is, Arjan arts, Channah psycholoog en
-						Joost data-strateeg? Omdat deze club semi-intellectuelen het systeem blijkbaar ook niet
+						Joost data-strateeg? Omdat deze club hoogopgeleiden het systeem blijkbaar ook niet
 						snappen. Dan zijn wij niet slim genoeg of is de uitleg te complex (of beiden 🤓). 
 						</i>
 					</p>
+					</blockquote>
 					<p>
 						We denken niet dat het ligt aan de Rijksoverheid, maar aan de complexe onderneming die het vaccineren
-						geworden is. Dus vandaar <a href="magikalprikken.nl">magikalprikken.nl</a> als oplossing!
+						geworden is. Dus vandaar <a href="https://magikalprikken.nl">magikalprikken.nl</a> als oplossing!
 					</p> 
 
-					<h4>En verder?</h4>
+					<h4 class="mt-5">En verder?</h4>
 
 					<p>
 						Ben je van de Rijksoverheid en vind je het interessant om dit verder op te pakken zodat het wat makkelijk wordt? Of ben je van de pers en nieuwsgierig naar het hele verhaal? Volg dan <a href="https://twitter.com/jplattel">Joost op twitter</a> en stuur een DM/mention.
 					</p>
 
-					<h4>Privacy & data verzameling</h4>
+					<h4 class="mt-5">Privacy & data verzameling</h4>
 
 					<p>
 						Er wordt op deze website geen enkele data verzameld of verzonden naar derden. Geen cookies & geen tracking. 
@@ -101,7 +101,7 @@
 				</div>
 				
 				<div class="d-grid mb-3">
-					<a href="#" class="btn btn-outline-primary" on:click={readMore}>&laquo; terug naar de vragen</a>
+					<a href="#" class="btn btn-outline-light" on:click={readMore}>&laquo; terug naar de vragen</a>
 				</div>
 			</div>
 		{/if}
