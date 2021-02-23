@@ -33,6 +33,22 @@ export default {
             {
                 'text': "Nee",
                 'class': 'btn-danger',
+                'newState': '2.5'
+            }
+        ]
+    },
+    '2.5': {
+        'type': Question,
+        'text': 'Ben tussen de 18 - 60 jaar en heb je een medische indicatie?',
+        'answers': [
+            {
+                'text': "Ja",
+                'class': 'btn-success',
+                'newState': '201'
+            },
+            {
+                'text': "Nee",
+                'class': 'btn-danger',
                 'newState': '3'
             }
         ]
@@ -152,6 +168,12 @@ export default {
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
         'confetti': true,
         'image': 'mail.gif'
+    },
+    '201': {
+        'type': Answer,
+        'text': 'Vanaf begin maart kan je een vaccin krijgen via de huisarts',
+        'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
+        'image': 'vaccine.gif'
     },
     '300': {
         'type': Answer,
