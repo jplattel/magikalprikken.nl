@@ -1,6 +1,8 @@
 <main class="container text-center">
 	<div class="row justify-content-md-center">
-		<h1 class="my-5 display-3">Mag ik al een prik?<span class="no-underline"> 💉</span></h1>	
+		<h1 class="my-5 display-3">
+			Mag ik al een prik?<span class="no-underline"> 💉</span>
+		</h1>	
 
 		{#if page == 'start'}
 			<div class="col-md-6">	
@@ -11,15 +13,15 @@
 
 				<svelte:component this={steps[state].type} {...steps[state]} on:answer={setState}/>
 				
-				<button class="btn btn-outline-light mt-3" id="reset" on:click={reset}>Reset ⟲</button>
+				<button class="btn btn-outline-dark mt-3" id="reset" on:click={reset}>Reset ⟲</button>
 
 				<hr>
 
 				<p class="text-start">
 					Nieuwsgierig wie dit heeft gemaakt en waarom? Lees er <a href="#" on:click={readMore}>hier</a> meer over. 
 					Vragen of opmerkingen, <a href="https://github.com/jplattel/magikalprikken.nl/issues">maak een issue aan op Github</a>!
-					Vind je dit tof? Deel deze pagina dan op <a target="_blank" href="https://twitter.com/intent/tweet?url=https://magikaleenprik.nl/&text=Ook nieuwsgierig wanneer je een COVID-19 vaccin krijgt?&hashtags=covid19,magikaleenprik,magikalprikken,corona,vaccin">Twitter</a> 
-					of <a href="https://www.facebook.com/sharer/sharer.php?u=https://magikaleenprik.nl/" target="_blank">Facebook</a>! 👋 
+					Vind je dit tof? Deel deze pagina dan op <a target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url=https://magikaleenprik.nl/&text=Ook nieuwsgierig wanneer je een COVID-19 vaccin krijgt?&hashtags=covid19,magikaleenprik,magikalprikken,corona,vaccin">Twitter</a> 
+					of <a href="https://www.facebook.com/sharer/sharer.php?u=https://magikaleenprik.nl/" target="_blank" rel="_noopener">Facebook</a>! 👋 
 				</p>
 			</div>
 		{:else if page == 'info' }

@@ -1,12 +1,12 @@
 <div class="card card-{type}" >
     <div class="card-body">
-        <h3 class="card-title mb-3">{text}</h3>
+        <h2 class="card-title mb-3">{text}</h2>
         {#if description} 
             <p class="card-text">{description}</p>
         {/if}
-        <div class="btn-group btn-group-lg d-flex" role="group" aria-label="Antwoorden">
+        <div role="group" aria-label="Antwoorden">
             {#each answers as answer}
-                <button type="button" class="btn {answer.class}" on:click={clickAnswer(answer.newState)}>{answer.text}</button>
+                <button style="width: 40%; margin: 10px;" type="button" class="btn-lg btn {answer.class}" on:click={clickAnswer(answer.newState)}>{answer.text}</button>
             {/each}
         </div>
     </div>

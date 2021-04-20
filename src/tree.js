@@ -172,7 +172,7 @@ export default {
     },
     '201': {
         'type': Answer,
-        'text': 'Vanaf begin maart kan je een vaccin krijgen via de huisarts',
+        'text': 'Vanaf eind juni kan je een vaccin krijgen via de huisarts',
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
         'image': 'vaccine.gif'
     },
