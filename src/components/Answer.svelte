@@ -5,7 +5,7 @@
     <div class="card-body">
         <h3 class="card-title mb-3">{text}</h3>
         {#if description} 
-            <p class="card-text">{description}</p>
+            <p class="card-text">{@html description}</p>
         {/if}
 
         {#if link} 

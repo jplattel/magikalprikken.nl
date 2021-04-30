@@ -164,11 +164,11 @@ export default {
     },
     '200': {
         'type': Answer,
-        'text': 'Je ontvangt een bericht wanneer je een vaccin kan ontvangen',
-        'description': 'Je ontvangt een brief wanneer je een vaccin krijgt of je krijgt een bericht van je huisarts',
+        'text': 'Je kan het vaccin krijgen via de GGD of de huisarts',
+        'description': 'Ben je geboren in of <strong>vóór 1955 of in 1961?</strong> Dan kan je via <a href="https://coronatest.nl/ik-wil-me-laten-vaccineren/een-online-afspraak-maken">hier</a> een afspraak maken. Ben je geboren tussen 1956 en 1960? Dan zoekt de huisarts contact voor de vaccinatie.',
         'link': 'https://www.rijksoverheid.nl/onderwerpen/coronavirus-vaccinatie/volgorde-van-vaccinatie-tegen-het-coronavirus/volgorde-vaccinatie-voor-mensen-die-niet-in-de-zorg-werken',
         'confetti': true,
-        'image': 'mail.gif'
+        'image': 'vaccine.gif'
     },
     '201': {
         'type': Answer,
